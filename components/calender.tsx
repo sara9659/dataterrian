@@ -147,6 +147,10 @@ const Calendar: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<CustomEventApi | null>(
     null
   );
+  const [activeEventId, setActiveEventId] = useState<string | number | null>(
+    null
+  );
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedEvents = localStorage.getItem("events");
@@ -209,12 +213,14 @@ const Calendar: React.FC = () => {
         jobTitle: "",
       },
     };
+    setActiveEventId(selected.event.id);
     setSelectedEvent(customEvent);
     setIsDialogOpen(true);
   };
 
   // const handleCloseDialog = () => {
   //   setIsDialogOpen(false);
+  //   setActiveEventId(null);
   // };
 
   // const handleAddEvent = (e: React.FormEvent) => {
@@ -264,9 +270,20 @@ const Calendar: React.FC = () => {
             eventClick={handleEventClick}
             eventContent={(arg) => {
               const { event } = arg;
-              const { title, start, end, extendedProps } = event;
+
+              const { id, title, start, end, extendedProps } = event;
+              const isActive = event.id === activeEventId; // Check if the event is active
+
               return (
-                <div className="fc-event-content p-2 mb-2">
+                <div
+                  style={{
+                    backgroundColor: isActive ? "#d1eefd" : "",
+                  }}
+                  className={`fc-event-content p-2  ${
+                    isActive ? "active-event" : ""
+                  }`}
+                  id={id}
+                >
                   <div className="flex justify-between items-center">
                     <p>{extendedProps.userDetails.jobTitle}</p>
                     <div className="flex justify-between items-center">
@@ -281,7 +298,7 @@ const Calendar: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  <div className="text-xs my-2">
+                  <div className="text-xs">
                     {title} <span className="px-1"> | </span>
                     <span>
                       Interviewer : {extendedProps.userDetails.handledBy}
@@ -302,14 +319,12 @@ const Calendar: React.FC = () => {
         </div>
       </div>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogTitle></DialogTitle>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Meetings</DialogTitle>
-          </DialogHeader>
           {selectedEvent && (
-            <div className="flex w-full">
+            <div className="flex w-full ind-popover">
               {/* Left Section */}
-              <div className="w-7/12 text-sm border-r-2">
+              <div className="w-6/12 text-sm border-r-2">
                 <p>
                   Interviewer with:{" "}
                   {selectedEvent?.userDetails?.candidateFirstName}{" "}
@@ -325,30 +340,29 @@ const Calendar: React.FC = () => {
                 <p>Interview Via: Google Meet</p>
 
                 {/* Resume Button */}
-                <button className="relative inline-flex items-center justify-center p-0.5 my-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                  <span className="flex relative p-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                    Resume.docx
-                    <span className="flex ml-2 gap-2">
-                      <FaEye /> <FaDownload />
-                    </span>
+
+                <button className="files-button mb-2">
+                  Resume.docx
+                  <span className="flex ml-2 gap-2">
+                    <FaEye /> <FaDownload />
                   </span>
                 </button>
 
                 {/* Aadhar Card Button */}
-                <button className="relative inline-flex items-center justify-center p-0.5 my-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
-                  <span className="flex relative p-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                    Aadhar Card
-                    <span className="flex ml-2 gap-2">
-                      <FaEye /> <FaDownload />
-                    </span>
+
+                <button className="files-button">
+                  Aadhar Card
+                  <span className="flex ml-2 gap-2">
+                    <FaEye /> <FaDownload />
                   </span>
                 </button>
               </div>
 
               {/* Right Section */}
-              <div className="flex flex-col w-5/12 items-center">
-                <div className="p-3 border-2 mb-2">
-                  <SiGooglemeet size={"4em"} />
+              <div className="flex flex-col w-6/12 items-center justify-center">
+                <div className="border-2 mb-2 rounded-sm">
+                  {/* <SiGooglemeet size={"4em"} /> */}
+                  <img src="gmeet_logo.png" alt=" " className="gmeet_img" />
                 </div>
                 <a
                   target="_blank"
