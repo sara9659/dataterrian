@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 0 0% 14.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.fc-prev-button.fc-button.fc-button-primary {
+  background: #fff;
+  border: 1px solid blue;
+  color: #565454;
+  padding: 2px;
+  border-radius: 5px !important;
+}
+
+.fc-toolbar-chunk:first-child
+  .fc
+  .fc-button-primary:not(:disabled).fc-button-active,
+.fc-toolbar-chunk:first-child .fc .fc-button-primary:not(:disabled):active {
+  background: #dbdbff !important;
+  color: #565454;
+}
+.fc-next-button.fc-button.fc-button-primary {
+  background: #fff;
+  border: 1px solid blue;
+  color: #565454;
+  padding: 2px;
+  border-radius: 5px !important;
+}
+
+.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr
+  .fc-toolbar-chunk:first-child
+  .fc-button-group {
+  gap: 10px;
+}
+.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr
+  .fc-toolbar-chunk:last-child
+  .fc-button-group {
+  gap: 15px;
+}
+
+.fc-today-button.fc-button.fc-button-primary {
+  background: #fff;
+  border: 0;
+  color: #0063be;
+  box-shadow: 2px 2px 2px 2px #ccc;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr
+  .fc-toolbar-chunk:last-child
+  .fc-button-group
+  button {
+  background: #fff;
+  color: #000;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  text-transform: capitalize;
+}
+
+.fc-header-toolbar.fc-toolbar.fc-toolbar-ltr
+  .fc-toolbar-chunk:last-child
+  .fc-button-group
+  button.fc-button-active {
+  border-bottom: 2px solid #0063be;
+  border-radius: 0;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active:focus,
+.fc .fc-button-primary:not(:disabled):active:focus {
+  box-shadow: none;
+}
+
+tbody .fc-scrollgrid-section:nth-child(2) {
+  display: none;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid #f6f4ff;
+}
+.fc .fc-timegrid-slot-label-cushion,
+.fc-timegrid-axis-cushion.fc-scrollgrid-shrink-cushion.fc-scrollgrid-sync-inner {
+  color: #0063be;
+}
+/* Container with scrollable content */
+
+/* For WebKit Browsers (Chrome, Safari, Edge) */
+/* Customize the scrollbar track */
+::-webkit-scrollbar {
+  width: 4px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #e0e0e0; /* Track color */
+}
+
+/* Customize the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background: #0063be; /* Thumb color */
+  border-radius: 10px; /* Rounded edges */
+}
+
+/* Hover effect for the thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker thumb color on hover */
+}
+
+.fc-v-event,
+.fc-event {
+  background: #fff;
+  border: 0;
+  box-shadow: 2px 2px 2px 2px #ccc !important;
+  border-left: 10px solid #0063be;
+}
+.fc-event:hover,
+.fc-event-selected::after,
+.fc-event:focus::after {
+  background: #dfe4fff5 !important;
+}
+.fc-v-event .fc-event-main {
+  color: #000;
+}
+
+.fc-event-selected::after,
+.fc-event:focus::after {
+  background: #fff;
+}
+
+.fc-daygrid-more-link.fc-more-link {
+  background: #ffb523;
+  width: 20px;
+  border-radius: 18px;
+}
+.fc-daygrid-more-link.fc-more-link:hover {
+  background: #f2d18f;
+}
+.fc .fc-daygrid-day-bottom {
+  margin-top: 2px;
+  position: absolute;
+  top: -10px;
+  z-index: 6;
+  right: 0;
+}
+.fc .fc-popover {
+  z-index: 1;
+}
+.fc-event {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+@media only screen and (max-width: 600px) {
+  .fc .fc-toolbar {
+    flex-direction: column;
+  }
+}
