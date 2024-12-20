@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { formatDate, DateSelectArg, EventClickArg } from "@fullcalendar/core";
+import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -16,9 +16,9 @@ import { MdOutlineDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaDownload, FaEye } from "react-icons/fa";
 import { SiGooglemeet } from "react-icons/si";
-interface EventApi {
-  extendedProps?: any;
-  id: number;
+interface CustomEventApi {
+  extendedProps?: string;
+  id: number | string;
   title: string;
   description: string;
   start: string;
@@ -37,7 +37,7 @@ interface EventApi {
     jobTitle: string;
   };
 }
-const transformedData: EventApi[] = [
+const transformedData: CustomEventApi[] = [
   {
     id: 1,
     title: "1st Round",
@@ -141,12 +141,12 @@ const transformedData: EventApi[] = [
 ];
 
 const Calendar: React.FC = () => {
-  const [currentEvents, setCurrentEvents] = useState<EventApi[]>([]);
+  const [currentEvents, setCurrentEvents] = useState<CustomEventApi[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<DateSelectArg | null>(null);
-
-  const [selectedEvent, setSelectedEvent] = useState<EventApi | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CustomEventApi | null>(
+    null
+  );
   useEffect(() => {
     // Load events from local storage when the component mounts
     if (typeof window !== "undefined") {
@@ -168,53 +168,74 @@ const Calendar: React.FC = () => {
   const handleDateClick = (selected: DateSelectArg) => {
     setSelectedDate(selected);
     //  setIsDialogOpen(true);
+    console.log(selectedDate);
   };
 
-  const handleDeleteEventClick = () => {
-    if (selectedEvent) {
-      if (
-        window.confirm(
-          `Are you sure you want to delete the event "${selectedEvent.title}"?`
-        )
-      ) {
-        selectedEvent.remove(); // Removes event from FullCalendar
-        // Also remove the event from the state
-        setCurrentEvents((prevEvents) =>
-          prevEvents.filter((e) => e.id !== selectedEvent.id)
-        );
-      }
-      setIsDialogOpen(false);
-    }
-  };
+  // const handleDeleteEventClick = () => {
+  //   if (selectedEvent) {
+  //     if (
+  //       window.confirm(
+  //         `Are you sure you want to delete the event "${selectedEvent.title}"?`
+  //       )
+  //     ) {
+  //       //selectedEvent.remove(); // Removes event from FullCalendar
+  //       // Also remove the event from the state
+  //       setCurrentEvents((prevEvents) =>
+  //         prevEvents.filter((e) => e.id !== selectedEvent.id)
+  //       );
+  //     }
+  //     setIsDialogOpen(false);
+  //   }
+  // };
 
   const handleEventClick = (selected: EventClickArg) => {
-    setSelectedEvent(selected.event);
+    const event = selected.event;
+    const customEvent: CustomEventApi = {
+      id: event.id,
+      title: event.title || "",
+      description: event.extendedProps?.description || "",
+      start: event.start?.toISOString() || "",
+      end: event.end?.toISOString() || "",
+      attendees: event.extendedProps?.attendees || null,
+      status: event.extendedProps?.status || null,
+      comment: event.extendedProps?.comment || null,
+      score: event.extendedProps?.score || {},
+      link: event.extendedProps?.link || "",
+      userDetails: event.extendedProps?.userDetails || {
+        id: 0,
+        candidateFirstName: "",
+        candidateLastName: "",
+        candidateEmail: "",
+        handledBy: "",
+        jobTitle: "",
+      },
+    };
+    setSelectedEvent(customEvent);
     setIsDialogOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setNewEventTitle("");
-  };
+  // const handleCloseDialog = () => {
+  //   setIsDialogOpen(false);
+  // };
 
-  const handleAddEvent = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newEventTitle && selectedDate) {
-      const calendarApi = selectedDate.view.calendar; // Get the calendar API instance.
-      calendarApi.unselect(); // Unselect the date range.
+  // const handleAddEvent = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (newEventTitle && selectedDate) {
+  //     const calendarApi = selectedDate.view.calendar; // Get the calendar API instance.
+  //     calendarApi.unselect(); // Unselect the date range.
 
-      const newEvent = {
-        id: `${selectedDate.start.toISOString()}-${newEventTitle}`,
-        title: newEventTitle,
-        start: selectedDate.start,
-        end: selectedDate.end,
-        allDay: selectedDate.allDay,
-      };
+  //     const newEvent = {
+  //       id: `${selectedDate.start.toISOString()}-${newEventTitle}`,
+  //       title: newEventTitle,
+  //       start: selectedDate.start,
+  //       end: selectedDate.end,
+  //       allDay: selectedDate.allDay,
+  //     };
 
-      calendarApi.addEvent(newEvent);
-      handleCloseDialog();
-    }
-  };
+  //     calendarApi.addEvent(newEvent);
+  //     handleCloseDialog();
+  //   }
+  // };
 
   return (
     <div>
@@ -227,23 +248,22 @@ const Calendar: React.FC = () => {
               left: "prev,next today",
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
-            }} // Set header toolbar options.
-            initialView="dayGridMonth" // Initial view mode of the calendar.
-            editable={true} // Allow events to be edited.
-            selectable={true} // Allow dates to be selectable.
-            selectMirror={true} // Mirror selections visually.
-            dayMaxEvents={1} // Limit the number of events displayed per day.
-            select={handleDateClick} // Handle date selection to create new events.
+            }}
+            initialView="dayGridMonth"
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={1}
+            select={handleDateClick}
             // eventClick={handleEventClick} // Handle clicking on events (e.g., to delete them).
-            eventsSet={(events) => setCurrentEvents(events)} // Update state with current events whenever they change.
+            // eventsSet={(events) => setCurrentEvents(events)} // Update state with current events whenever they change.
             initialEvents={
               typeof window !== "undefined"
                 ? JSON.parse(localStorage.getItem("events") || "[]")
                 : []
-            } // Initial events loaded from local storage.
+            }
             eventClick={handleEventClick}
             eventContent={(arg) => {
-              // Custom event content
               const { event } = arg;
               const { title, start, end, extendedProps } = event;
               return (
@@ -256,7 +276,7 @@ const Calendar: React.FC = () => {
                       </button>
                       <button
                         className="text-red-500"
-                        onClick={handleDeleteEventClick}
+                        // onClick={handleDeleteEventClick}
                       >
                         <MdOutlineDelete />
                       </button>
@@ -293,26 +313,11 @@ const Calendar: React.FC = () => {
               <div className="w-7/12 text-sm border-r-2">
                 <p>
                   Interviewer with:{" "}
-                  {selectedEvent.extendedProps?.userDetails?.candidateFirstName}{" "}
-                  {
-                    selectedEvent.extendedProps?.userDetails?.candidate
-                      ?.candidateLastName
-                  }
+                  {selectedEvent?.userDetails?.candidateFirstName}{" "}
+                  {selectedEvent?.userDetails?.candidateLastName}
                 </p>
-                <p>
-                  Position: {selectedEvent.extendedProps?.userDetails?.jobTitle}
-                </p>
-                <p>
-                  Created By:{" "}
-                  {
-                    selectedEvent.extendedProps?.userDetails?.handled_by
-                      ?.firstName
-                  }{" "}
-                  {
-                    selectedEvent.extendedProps?.userDetails?.handled_by
-                      ?.lastName
-                  }
-                </p>
+                <p>Position: {selectedEvent?.userDetails?.jobTitle}</p>
+                <p>Created By: -</p>
                 <p>Interview Date: {formatDate(selectedEvent.start)}</p>
                 <p>
                   Interview Time:{" "}
@@ -386,9 +391,10 @@ const Calendar: React.FC = () => {
     return monthNames[monthNumber - 1];
   }
   function formatTimeRange(
-    startTimeStr: string | number | Date,
-    endTimeStr: string | number | Date
+    startTimeStr: string | number | Date | null,
+    endTimeStr: string | number | Date | null
   ) {
+    if (!startTimeStr || !endTimeStr) return "";
     const startTime = new Date(startTimeStr);
     const endTime = new Date(endTimeStr);
 
