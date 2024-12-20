@@ -15,7 +15,6 @@ import {
 import { MdOutlineDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { FaDownload, FaEye } from "react-icons/fa";
-import { SiGooglemeet } from "react-icons/si";
 interface CustomEventApi {
   extendedProps?: string;
   id: number | string;
@@ -319,7 +318,10 @@ const Calendar: React.FC = () => {
         </div>
       </div>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogTitle></DialogTitle>
+        <DialogHeader>
+          <DialogTitle></DialogTitle>
+        </DialogHeader>
+
         <DialogContent>
           {selectedEvent && (
             <div className="flex w-full ind-popover">
