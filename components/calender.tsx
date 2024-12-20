@@ -148,18 +148,17 @@ const Calendar: React.FC = () => {
     null
   );
   useEffect(() => {
-    // Load events from local storage when the component mounts
     if (typeof window !== "undefined") {
       const savedEvents = localStorage.getItem("events");
       if (savedEvents) {
         setCurrentEvents(JSON.parse(savedEvents));
+      } else {
+        setCurrentEvents(transformedData);
+        window.location.reload();
       }
-      setCurrentEvents(transformedData);
     }
   }, []);
-
   useEffect(() => {
-    // Save events to local storage whenever they change
     if (typeof window !== "undefined") {
       localStorage.setItem("events", JSON.stringify(currentEvents));
     }
